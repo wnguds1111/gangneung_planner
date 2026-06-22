@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌊 강릉 여행 플래너</title>
+  <meta name="description" content="친구들과 함께하는 강릉 바다 여행! 예약내역, 지출, 동선을 한눈에 관리하는 올인원 플래너">
+  <meta name="theme-color" content="#0c1b2a">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ================================================================ HERO ================================================================ -->
+<div class="hero">
+  <div class="ocean-particles" id="oceanParticles"></div>
+  <div class="hero-waves">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path d="M0,40 C240,90 480,10 720,50 C960,90 1200,20 1440,60 L1440,120 L0,120 Z" fill="rgba(59,190,219,0.08)"/>
+      <path d="M0,70 C360,30 720,90 1080,50 C1260,35 1380,65 1440,55 L1440,120 L0,120 Z" fill="rgba(6,182,212,0.05)"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">🇰🇷 강원도 · 강릉 · 2026 🌊</div>
+    <h1 class="hero-title">🌊 강릉 여행 플래너</h1>
+    <p class="hero-sub">친구들과 함께하는 푸른 바다 여행 🐚</p>
+    <div class="hero-countdown">
+      <div class="countdown-item"><div class="countdown-num" id="cdDays">--</div><div class="countdown-lbl">Days</div></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item"><div class="countdown-num" id="cdHours">--</div><div class="countdown-lbl">Hours</div></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item"><div class="countdown-num" id="cdMins">--</div><div class="countdown-lbl">Mins</div></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item"><div class="countdown-num" id="cdSecs">--</div><div class="countdown-lbl">Secs</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ TAB BAR ================================================================ -->
+<div class="tabs-bar">
+  <button class="tab-btn active" id="tabBooking" onclick="switchTab('booking', this)"><span class="tab-icon">📋</span> 예약내역</button>
+  <button class="tab-btn" id="tabExpense" onclick="switchTab('expense', this)"><span class="tab-icon">💸</span> 지출</button>
+  <button class="tab-btn" id="tabRoute" onclick="switchTab('route', this)"><span class="tab-icon">🗺️</span> 동선</button>
+</div>
+
+<!-- ================================================================ MAIN ================================================================ -->
+<div class="main-container">
+
+  <!-- ═══ TAB 1: 예약내역 ═══ -->
+  <div class="tab-panel active" id="panel-booking">
+    <div class="section-heading">
+      <div>
+        <div class="section-title"><span class="section-title-icon">📋</span> 예약내역</div>
+        <div class="section-sub">숙소, 교통, 맛집, 액티비티 등 모든 예약을 한눈에! ✨</div>
+      </div>
+      <button class="btn-add-entry" onclick="openBookingModal()">+ 예약 추가</button>
+    </div>
+
+    <!-- 예약 요약 배너 -->
+    <div id="bookingSummaryBanner" class="summary-banner" style="display:none;">
+      <div class="summary-item"><div class="summary-lbl">총 예약</div><div class="summary-val" id="summaryBookingCount">0건</div></div>
+      <div class="summary-divider"></div>
+      <div class="summary-item"><div class="summary-lbl">확정</div><div class="summary-val accent" id="summaryConfirmed">0건</div></div>
+      <div class="summary-divider"></div>
+      <div class="summary-item"><div class="summary-lbl">미확정</div><div class="summary-val warning" id="summaryPending">0건</div></div>
+    </div>
+
+    <!-- 필터 -->
+    <div class="filter-bar" id="bookingFilterBar">
+      <button class="filter-chip active" onclick="filterBookings('all', this)">전체</button>
+      <button class="filter-chip" onclick="filterBookings('숙소', this)">🏨 숙소</button>
+      <button class="filter-chip" onclick="filterBookings('교통', this)">🚗 교통</button>
+      <button class="filter-chip" onclick="filterBookings('맛집', this)">🍽️ 맛집</button>
+      <button class="filter-chip" onclick="filterBookings('액티비티', this)">🏄 액티비티</button>
+      <button class="filter-chip" onclick="filterBookings('기타', this)">📦 기타</button>
+    </div>
+
+    <div id="bookingTableWrap">
+      <div id="bookingEmptyState" class="empty-state">
+        <div class="empty-icon">🏖️</div>
+        <div class="empty-title">아직 예약 내역이 없어요</div>
+        <div class="empty-sub">상단의 "예약 추가" 버튼으로 숙소, 교통, 맛집 등 예약 정보를 등록해보세요!</div>
+        <button class="btn-add-entry" onclick="openBookingModal()">+ 첫 예약 추가하기</button>
+      </div>
+      <div id="bookingGrid" class="booking-grid" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB 2: 지출 ═══ -->
+  <div class="tab-panel" id="panel-expense">
+    <div class="section-heading">
+      <div>
+        <div class="section-title"><span class="section-title-icon">💸</span> 지출 정리</div>
+        <div class="section-sub">강릉 여행 비용을 깔끔하게 관리하세요! 💳</div>
+      </div>
+      <button class="btn-add-entry" onclick="openExpenseModal()">+ 지출 추가</button>
+    </div>
+
+    <!-- 지출 요약 배너 -->
+    <div id="expenseSummaryBanner" class="summary-banner" style="margin-bottom:24px;">
+      <div class="summary-item"><div class="summary-lbl">총 지출</div><div class="summary-val accent" id="summaryTotalKrw">₩ 0</div></div>
+      <div class="summary-divider"></div>
+      <div class="summary-item"><div class="summary-lbl">1인당</div><div class="summary-val" id="summaryPerPerson">₩ 0</div></div>
+      <div class="summary-divider"></div>
+      <div class="summary-item"><div class="summary-lbl">참여 인원</div><div class="summary-val" id="summaryPeople">0명</div></div>
+    </div>
+
+    <!-- 멤버 관리 -->
+    <div class="members-bar glass-card" id="membersBar">
+      <div class="members-header">
+        <div class="members-title">👥 여행 멤버</div>
+        <button class="btn-add-member" onclick="openMemberModal()">+ 멤버 추가</button>
+      </div>
+      <div class="members-list" id="membersList"></div>
+    </div>
+
+    <!-- 지출 리스트 -->
+    <div id="expenseTableWrap">
+      <div id="expenseEmptyState" class="empty-state">
+        <div class="empty-icon">🧾</div>
+        <div class="empty-title">아직 지출 내역이 없어요</div>
+        <div class="empty-sub">상단의 "지출 추가" 버튼으로 소비 금액을 기록해보세요!</div>
+        <button class="btn-add-entry" onclick="openExpenseModal()">+ 첫 지출 등록하기</button>
+      </div>
+      <div id="expenseGrid" class="expense-grid" style="display:none;"></div>
+    </div>
+
+    <!-- 정산 결과 -->
+    <div id="settlementSection" class="settlement-section" style="display:none;">
+      <div class="section-title" style="font-size:20px; margin-bottom:16px;"><span class="section-title-icon">🔄</span> 정산 결과</div>
+      <div id="settlementResult" class="settlement-grid"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB 3: 동선 ═══ -->
+  <div class="tab-panel" id="panel-route">
+    <div class="section-heading">
+      <div>
+        <div class="section-title"><span class="section-title-icon">🗺️</span> 동선 짜기</div>
+        <div class="section-sub">날짜별 방문 장소 & 이동 동선을 기록하세요 📍</div>
+      </div>
+      <button class="btn-add-entry" onclick="openRouteModal()">+ 일정 추가</button>
+    </div>
+
+    <div class="route-layout">
+      <div class="route-sidebar">
+        <div class="glass-card" style="padding: 20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <div style="font-size:15px; font-weight:700;">📅 일정 목록</div>
+            <div style="display:flex;gap:6px;">
+              <button class="filter-chip" id="btnEditDays" onclick="toggleDayEditMode()" style="font-size:11px; padding:5px 12px;">✏️ 편집</button>
+              <button class="filter-chip" onclick="addDay()" style="font-size:11px; padding:5px 12px;">+ 날짜 추가</button>
+            </div>
+          </div>
+          <div class="day-tabs-mini" id="dayTabsMini"></div>
+          <div class="timeline" id="timelineList"></div>
+          <button class="btn-add-place" onclick="openRouteModal()">+ 새로운 장소 추가하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main-container -->
+
+<!-- ================================================================ MODAL: 예약 추가/수정 ================================================================ -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal-box" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title" id="bookingModalTitle">📋 예약 추가</div>
+      <button class="btn-close-modal" onclick="closeBookingModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="bookingEditId">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">카테고리 *</label>
+          <select class="form-input" id="bm_category">
+            <option value="숙소">🏨 숙소</option>
+            <option value="교통">🚗 교통</option>
+            <option value="맛집">🍽️ 맛집</option>
+            <option value="액티비티">🏄 액티비티</option>
+            <option value="기타">📦 기타</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">예약명 *</label>
+          <input class="form-input" id="bm_name" placeholder="예: 강릉 씨마크호텔, KTX 서울→강릉...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">날짜</label>
+          <input class="form-input" id="bm_date" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">시간</label>
+          <input class="form-input" id="bm_time" type="time">
+        </div>
+        <div class="form-group">
+          <label class="form-label">금액 (원)</label>
+          <input class="form-input" id="bm_price" type="number" placeholder="예: 150000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">상태</label>
+          <select class="form-input" id="bm_status">
+            <option value="confirmed">✅ 확정</option>
+            <option value="pending">⏳ 미확정</option>
+            <option value="cancelled">❌ 취소</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">🔗 예약 링크</label>
+          <input class="form-input" id="bm_link" placeholder="https://...">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">메모</label>
+          <textarea class="form-input" id="bm_memo" rows="2" placeholder="체크인 시간, 주차 정보, 예약 번호 등..."></textarea>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="saveBooking()">💾 저장하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ MODAL: 지출 추가/수정 ================================================================ -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal-box" style="max-width: 440px;">
+    <div class="modal-header">
+      <div class="modal-title" id="expenseModalTitle">💸 지출 등록</div>
+      <button class="btn-close-modal" onclick="closeExpenseModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editExpenseId">
+      <div class="form-group">
+        <label class="form-label">카테고리</label>
+        <select class="form-input" id="expenseCategory">
+          <option value="교통">🚗 교통</option>
+          <option value="숙박">🏨 숙박</option>
+          <option value="식비">🍽️ 식비</option>
+          <option value="관광">🏄 관광/액티비티</option>
+          <option value="쇼핑">🛍️ 쇼핑</option>
+          <option value="기타">📦 기타</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">내역 이름 *</label>
+        <input class="form-input" type="text" id="expenseTitle" placeholder="예: KTX 왕복, 회 사시미...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">금액 (원) *</label>
+        <input class="form-input" type="number" id="expenseAmount" placeholder="숫자만 입력">
+      </div>
+      <div class="form-group">
+        <label class="form-label">결제자</label>
+        <select class="form-input" id="expensePayer">
+          <!-- JS에서 멤버 목록 동적 생성 -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">메모 (선택)</label>
+        <input class="form-input" type="text" id="expenseMemo" placeholder="추가 메모...">
+      </div>
+      <button class="btn-primary" onclick="saveExpense()">💾 지출 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ MODAL: 멤버 추가 ================================================================ -->
+<div class="modal-overlay" id="memberModal">
+  <div class="modal-box" style="max-width: 380px;">
+    <div class="modal-header">
+      <div class="modal-title">👤 멤버 추가</div>
+      <button class="btn-close-modal" onclick="closeMemberModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">이름 / 닉네임 *</label>
+        <input class="form-input" type="text" id="memberName" placeholder="예: 홍길동, 바다쟁이...">
+      </div>
+      <button class="btn-primary" onclick="addMember()">✅ 추가하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ MODAL: 동선/일정 추가 ================================================================ -->
+<div class="modal-overlay" id="routeModal">
+  <div class="modal-box" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title" id="routeModalTitle">📍 새 장소 추가</div>
+      <button class="btn-close-modal" onclick="closeRouteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="routeEditId">
+      <div class="form-group"><label class="form-label">날짜 선택</label><select class="form-input" id="routeDay" style="font-family:inherit;"></select></div>
+      <div class="form-group"><label class="form-label">방문 시간</label><input class="form-input" type="time" id="routeTime"></div>
+      <div class="form-group">
+        <label class="form-label">📍 장소명</label>
+        <input class="form-input" type="text" id="routeName" placeholder="예: 경포대, 안목해변 카페거리..." autocomplete="off">
+      </div>
+      <div class="form-group"><label class="form-label">메모</label><textarea class="form-input" id="routeMemo" rows="2" placeholder="이곳에서 할 일이나 특징..."></textarea></div>
+      <button class="btn-primary" onclick="saveRoute()">💾 일정 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FLOATING MEMO WIDGET ═══ -->
+<div class="floating-memo-widget" id="floatingMemoWidget">
+  <button class="memo-trigger-btn" id="memoTriggerBtn" onclick="toggleMemoWidget()" title="메모 열기">
+    <span class="memo-icon">💬</span>
+  </button>
+  <div class="glass-card memo-card-popup" id="memoCardPopup">
+    <div class="memo-popup-header">
+      <div style="font-weight: 600; font-size: 17px; color: var(--ink); display: flex; align-items: center; gap: 8px;">
+        <span>📝</span> 우리의 메모장
+      </div>
+      <button class="btn-close-memo" onclick="toggleMemoWidget()">✕</button>
+    </div>
+    <div class="memo-popup-body" id="memoBoard"></div>
+    <div class="memo-popup-footer">
+      <input class="form-input memo-input-field" id="memoInput" placeholder="메모를 남겨보세요..." onkeypress="if(event.key==='Enter') postMemo()">
+      <button class="btn-send-memo" onclick="postMemo()">남기기</button>
+    </div>
+  </div>
+</div>
+
+<footer>🌊 Gangneung Travel Planner &nbsp;·&nbsp; 친구들과의 바다 여행 계획표 🐚 &nbsp;·&nbsp; Local Storage 💾</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
