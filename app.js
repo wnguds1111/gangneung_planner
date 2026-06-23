@@ -738,62 +738,6 @@ function formatDate(dateStr) {
 // ================================================================
 //  SYDNEY-STYLE ANIMATIONS & TIMERS (GANGNEUNG CUSTOMIZED)
 // ================================================================
-let gullsActive = false;
-let gullInterval = null;
-
-function toggleGulls() {
-  const btn = document.getElementById("btnGullToggle");
-  if (!btn) return;
-  
-  gullsActive = !gullsActive;
-  if (gullsActive) {
-    btn.textContent = "갈매기 OFF 🚫";
-    btn.classList.add("active");
-    startGullSpawning();
-  } else {
-    btn.textContent = "갈매기 ON 🐦";
-    btn.classList.remove("active");
-    stopGullSpawning();
-  }
-}
-
-function startGullSpawning() {
-  // Spawn a new seagull every 1.2s
-  gullInterval = setInterval(() => {
-    const gull = document.createElement("div");
-    gull.className = "floating-gull";
-    gull.textContent = "🐦";
-    
-    const size = 20 + Math.random() * 16;
-    const startY = 60 + Math.random() * (window.innerHeight - 180);
-    const duration = 5 + Math.random() * 4; // 5 to 9 seconds
-    
-    gull.style.cssText = `
-      position: fixed;
-      left: -50px;
-      top: ${startY}px;
-      font-size: ${size}px;
-      z-index: 9999;
-      pointer-events: none;
-      transition: transform ${duration}s linear;
-      transform: scaleX(-1); /* Make it face forward */
-    `;
-    document.body.appendChild(gull);
-    
-    // Animate flight across screen
-    setTimeout(() => {
-      gull.style.transform = `translateX(${window.innerWidth + 100}px) translateY(${Math.sin(Math.random() * 4) * 60}px) scaleX(-1)`;
-    }, 50);
-    
-    // Auto cleanup
-    setTimeout(() => gull.remove(), duration * 1000 + 100);
-  }, 1200);
-}
-
-function stopGullSpawning() {
-  clearInterval(gullInterval);
-  document.querySelectorAll(".floating-gull").forEach(g => g.remove());
-}
 
 function generateStarField() {
   const field = document.getElementById("starField");
