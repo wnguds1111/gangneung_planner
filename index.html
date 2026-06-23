@@ -12,9 +12,52 @@
 
 <!-- ================================================================ HERO ================================================================ -->
 <div class="hero">
+  <button id="btnGullToggle" class="btn-gull-toggle" onclick="toggleGulls()">갈매기 ON 🐦</button>
+  <div class="star-field" id="starField"></div>
+  
+  <!-- Gangneung Silhouette (Gyeongpodae Pavilion & Pine Trees) -->
+  <svg class="gangneung-silhouette" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gyeongpodae Pavilion -->
+    <path d="M 320,180 L 320,130 L 330,130 L 330,110 L 310,110 Q 350,90 390,110 L 370,110 L 370,130 L 380,130 L 380,180 Z" fill="white" opacity="0.9"/>
+    <path d="M 280,115 Q 350,85 420,115 L 400,110 Q 350,80 300,110 Z" fill="white"/>
+    
+    <!-- Coastal Pine Trees (해송) -->
+    <path d="M 120,180 L 120,140 Q 100,120 120,100 Q 140,120 120,140 Z" fill="white" opacity="0.75"/>
+    <path d="M 100,180 L 100,150 Q 85,130 100,115 Q 115,130 100,150 Z" fill="white" opacity="0.6"/>
+    <path d="M 140,180 L 140,145 Q 130,125 140,110 Q 150,125 140,145 Z" fill="white" opacity="0.6"/>
+    <path d="M 680,180 L 680,135 Q 660,115 680,95 Q 700,115 680,135 Z" fill="white" opacity="0.7"/>
+    <path d="M 700,180 L 700,145 Q 690,125 700,110 Q 710,125 700,145 Z" fill="white" opacity="0.55"/>
+    
+    <!-- Wave line silhouette -->
+    <path d="M 0,180 Q 200,165 400,180 Q 600,195 800,180 L 800,200 L 0,200 Z" fill="white" opacity="0.15"/>
+    
+    <!-- Flying Seagulls -->
+    <path d="M 180,60 Q 190,50 200,60 Q 210,50 220,60" stroke="white" stroke-width="2.5" fill="none" opacity="0.6" stroke-linecap="round"/>
+    <path d="M 520,40 Q 528,32 536,40 Q 544,32 552,40" stroke="white" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+  </svg>
+
+  <!-- Waving Water SVG -->
+  <div class="hero-waves">
+    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1350,20 1440,40 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
+      <path d="M0,60 C480,20 960,80 1440,60 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.06)"/>
+    </svg>
+  </div>
+
   <div class="hero-content">
-    <h1 class="hero-title">강릉 여행 플래너</h1>
+    <h1 class="hero-title">🌊 강릉 여행 플래너</h1>
     <p class="hero-sub">2026.07.24 ~ 2026.07.26</p>
+    
+    <!-- Hero Countdown Widget -->
+    <div class="hero-countdown">
+      <div class="countdown-item"><div class="countdown-num" id="cdDays">--</div><div class="countdown-lbl">Days</div></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item"><div class="countdown-num" id="cdHours">--</div><div class="countdown-lbl">Hours</div></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item"><div class="countdown-num" id="cdMins">--</div><div class="countdown-lbl">Mins</div></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-item"><div class="countdown-num" id="cdSecs">--</div><div class="countdown-lbl">Secs</div></div>
+    </div>
   </div>
 </div>
 

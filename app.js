@@ -47,6 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Auto-activate Map
   activateMap();
+  
+  // Twinkling Starfield & Countdown timer
+  generateStarField();
+  startCountdown();
 });
 
 // ─── Local Storage: Load / Save ───
@@ -724,4 +728,113 @@ function formatDate(dateStr) {
   const wk = ["일","월","화","수","목","금","토"][d.getDay()];
   return `${m}/${day} (${wk})`;
 }
+
+// ================================================================
+//  SYDNEY-STYLE ANIMATIONS & TIMERS (GANGNEUNG CUSTOMIZED)
+// ================================================================
+let gullsActive = false;
+let gullInterval = null;
+
+function toggleGulls() {
+  const btn = document.getElementById("btnGullToggle");
+  if (!btn) return;
+  
+  gullsActive = !gullsActive;
+  if (gullsActive) {
+    btn.textContent = "갈매기 OFF 🚫";
+    btn.classList.add("active");
+    startGullSpawning();
+  } else {
+    btn.textContent = "갈매기 ON 🐦";
+    btn.classList.remove("active");
+    stopGullSpawning();
+  }
+}
+
+function startGullSpawning() {
+  // Spawn a new seagull every 1.2s
+  gullInterval = setInterval(() => {
+    const gull = document.createElement("div");
+    gull.className = "floating-gull";
+    gull.textContent = "🐦";
+    
+    const size = 20 + Math.random() * 16;
+    const startY = 60 + Math.random() * (window.innerHeight - 180);
+    const duration = 5 + Math.random() * 4; // 5 to 9 seconds
+    
+    gull.style.cssText = `
+      position: fixed;
+      left: -50px;
+      top: ${startY}px;
+      font-size: ${size}px;
+      z-index: 9999;
+      pointer-events: none;
+      transition: transform ${duration}s linear;
+      transform: scaleX(-1); /* Make it face forward */
+    `;
+    document.body.appendChild(gull);
+    
+    // Animate flight across screen
+    setTimeout(() => {
+      gull.style.transform = `translateX(${window.innerWidth + 100}px) translateY(${Math.sin(Math.random() * 4) * 60}px) scaleX(-1)`;
+    }, 50);
+    
+    // Auto cleanup
+    setTimeout(() => gull.remove(), duration * 1000 + 100);
+  }, 1200);
+}
+
+function stopGullSpawning() {
+  clearInterval(gullInterval);
+  document.querySelectorAll(".floating-gull").forEach(g => g.remove());
+}
+
+function generateStarField() {
+  const field = document.getElementById("starField");
+  if (!field) return;
+  field.innerHTML = "";
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement("div");
+    star.className = "star";
+    star.style.cssText = `
+      position: absolute;
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      width: ${2 + Math.random() * 3}px;
+      height: ${2 + Math.random() * 3}px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 50%;
+      animation: twinkle ${2 + Math.random() * 3}s ease-in-out infinite;
+      animation-delay: ${Math.random() * 2}s;
+    `;
+    field.appendChild(star);
+  }
+}
+
+function startCountdown() {
+  const update = () => {
+    if (!planData || !planData.departDate) return;
+    const target = new Date(planData.departDate).getTime();
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      ["cdDays","cdHours","cdMins","cdSecs"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = "00";
+      });
+      return;
+    }
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    
+    const cdD = document.getElementById("cdDays"); if(cdD) cdD.textContent = String(d).padStart(2,"0");
+    const cdH = document.getElementById("cdHours"); if(cdH) cdH.textContent = String(h).padStart(2,"0");
+    const cdM = document.getElementById("cdMins"); if(cdM) cdM.textContent = String(m).padStart(2,"0");
+    const cdS = document.getElementById("cdSecs"); if(cdS) cdS.textContent = String(s).padStart(2,"0");
+  };
+  update();
+  setInterval(update, 1000);
+}
+
 
