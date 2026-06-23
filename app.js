@@ -567,6 +567,11 @@ function initPlaceAutocomplete() {
       const lng = place.geometry.location.lng();
       document.getElementById("routeLat").value = lat;
       document.getElementById("routeLng").value = lng;
+      
+      if (place.name) {
+        input.value = place.name;
+      }
+      
       if (statusEl) {
         statusEl.textContent = `📍 위치 감지됨: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
         statusEl.style.color = "var(--success)";
