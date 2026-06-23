@@ -31,8 +31,8 @@
   --brand-peach:       #0f766e;         /* Deep Teal */
   --brand-ochre:       #38bdf8;         /* Light Cyan */
   --brand-cream:       #ffffff;         /* Slate/White */
-  --brand-mint:        #a4d4c5;
-  --brand-coral:       #ff6b5a;
+  --brand-mint:        #93c5fd;
+  --brand-coral:       #2563eb;
 
   --on-primary:        #ffffff;
   --on-dark:           #ffffff;
@@ -346,7 +346,7 @@ a { text-decoration: none; color: inherit; }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 250, 240, 0.95);
+  background: rgba(240, 249, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--hairline);

@@ -507,11 +507,11 @@ let gmMarkers = [];
 let gmPolyline = null;
 
 const DAY_COLORS = [
-  { marker: "#ff4d8b", border: "#ffffff", line: "#ff4d8b" }, // Pink
-  { marker: "#1a3a3a", border: "#ffffff", line: "#1a3a3a" }, // Deep Teal
-  { marker: "#b8a4ed", border: "#ffffff", line: "#b8a4ed" }, // Lavender
-  { marker: "#ffb084", border: "#ffffff", line: "#ffb084" }, // Peach
-  { marker: "#e8b94a", border: "#ffffff", line: "#e8b94a" }  // Ochre
+  { marker: "#0284c7", border: "#ffffff", line: "#0284c7" }, // Ocean Blue
+  { marker: "#1e3a8a", border: "#ffffff", line: "#1e3a8a" }, // Royal Navy
+  { marker: "#0f766e", border: "#ffffff", line: "#0f766e" }, // Deep Teal
+  { marker: "#3b82f6", border: "#ffffff", line: "#3b82f6" }, // Steel Blue
+  { marker: "#6366f1", border: "#ffffff", line: "#6366f1" }  // Indigo/Lavender Blue
 ];
 
 const DEFAULT_API_KEY = "AIzaSyA4_3OvP8rbcye4IHzZrj-W6Tga6GudylQ";
