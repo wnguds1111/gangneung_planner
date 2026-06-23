@@ -9,6 +9,7 @@ const STORAGE_KEY = "gangneung_planner_data";
 let planData = null;
 let currentDay = 1;
 let dayEditMode = false;
+let lastSavedTime = 0;
 
 // ─── Default Data ───
 const defaultData = {
@@ -50,20 +51,84 @@ document.addEventListener("DOMContentLoaded", () => {
   // Twinkling Starfield & Countdown timer
   generateStarField();
   startCountdown();
+
+  // Periodically check for updates from server (Auto-sync between devices)
+  setInterval(fetchPlanFromServer, 5000);
 });
 
 // ─── Local Storage: Load / Save ───
 function saveData() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(planData));
+    
+    // Save to backend server database (PC-Mobile Auto Sync)
+    lastSavedTime = Date.now();
+    fetch('/api/plan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(planData)
+    }).then(res => res.json())
+      .then(data => {
+        console.log("☁️ Saved to server database:", data.message);
+      }).catch(err => {
+        console.error("☁️ Server save error:", err);
+      });
   } catch(e) {
     console.error("Save error:", e);
   }
 }
 
+function runMigrations() {
+  if (!planData) return false;
+  let migrated = false;
+  
+  if (!planData.expenses) planData.expenses = [];
+  if (!planData.memberCount) planData.memberCount = planData.members ? planData.members.length : 2;
+
+  if (planData.members) {
+    const originalMembers = JSON.stringify(planData.members);
+    planData.members = planData.members.map(m => {
+      if (m === "나") return "주형";
+      if (m === "친구 1") return "기태";
+      return m;
+    });
+    if (originalMembers !== JSON.stringify(planData.members)) migrated = true;
+  }
+  
+  if (planData.expenses) {
+    planData.expenses.forEach(e => {
+      if (e.payer === "나") {
+        e.payer = "주형";
+        migrated = true;
+      } else if (e.payer === "친구 1") {
+        e.payer = "기태";
+        migrated = true;
+      }
+    });
+  }
+
+  if (!planData.members) {
+    planData.members = ["주형"];
+    for (let i = 1; i < planData.memberCount; i++) {
+      if (i === 1) planData.members.push("기태");
+      else planData.members.push(`친구 ${i}`);
+    }
+    migrated = true;
+  }
+
+  if (!planData.days) {
+    planData.days = JSON.parse(JSON.stringify(defaultData.days));
+    migrated = true;
+  }
+  
+  return migrated;
+}
+
 function loadData() {
   try {
-    // 🔗 URL 동기화 해시 체크 및 가져오기
+    // 1. URL 동기화 해시 체크 및 가져오기 (만약 존재할 경우)
     const hash = window.location.hash;
     if (hash && hash.startsWith("#data=")) {
       try {
@@ -72,10 +137,11 @@ function loadData() {
         const parsed = JSON.parse(jsonStr);
         if (parsed && typeof parsed === 'object') {
           planData = parsed;
+          runMigrations();
           saveData();
-          // URL의 해시를 제거하여 주소창을 깔끔하게 유지
           window.history.replaceState(null, null, window.location.origin + window.location.pathname);
           alert("📥 기기 동기화 완료! 현재 데이터를 성공적으로 가져왔습니다.");
+          renderAll();
           return;
         }
       } catch (e) {
@@ -83,56 +149,69 @@ function loadData() {
       }
     }
 
+    // 2. 로컬 브라우저 캐시에서 동기적으로 먼저 로드 (빠른 화면 표시용)
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       planData = JSON.parse(saved);
-      if (!planData.expenses) planData.expenses = [];
-      if (!planData.memos) planData.memos = [];
-      if (!planData.memberCount) planData.memberCount = planData.members ? planData.members.length : 2;
-      
-      // Migrate "나" -> "주형", "친구 1" -> "기태"
-      let migrated = false;
-      if (planData.members) {
-        const originalMembers = JSON.stringify(planData.members);
-        planData.members = planData.members.map(m => {
-          if (m === "나") return "주형";
-          if (m === "친구 1") return "기태";
-          return m;
-        });
-        if (originalMembers !== JSON.stringify(planData.members)) migrated = true;
-      }
-      if (planData.expenses) {
-        planData.expenses.forEach(e => {
-          if (e.payer === "나") {
-            e.payer = "주형";
-            migrated = true;
-          } else if (e.payer === "친구 1") {
-            e.payer = "기태";
-            migrated = true;
-          }
-        });
-      }
-
-      if (!planData.members) {
-        planData.members = ["주형"];
-        for (let i = 1; i < planData.memberCount; i++) {
-          if (i === 1) planData.members.push("기태");
-          else planData.members.push(`친구 ${i}`);
-        }
-        migrated = true;
-      }
+      const migrated = runMigrations();
       if (migrated) saveData();
-
-      if (!planData.days) planData.days = JSON.parse(JSON.stringify(defaultData.days));
-      console.log("✅ 강릉 플래너 로드 완료");
+      console.log("✅ 로컬 캐시 데이터 로드 완료");
     } else {
       planData = JSON.parse(JSON.stringify(defaultData));
       saveData();
-      console.log("📝 기본 데이터 생성");
+      console.log("📝 기본 데이터 생성 완료");
     }
   } catch (e) {
     console.error("Load error:", e);
     planData = JSON.parse(JSON.stringify(defaultData));
+  }
+
+  // 3. 백엔드 클라우드 데이터베이스에서 비동기로 최신 데이터 가져와서 동기화
+  fetchPlanFromServer();
+}
+
+function fetchPlanFromServer() {
+  // Postpone if we just saved recently to allow server write to complete and avoid overwriting local changes
+  if (Date.now() - lastSavedTime < 4000) {
+    return;
+  }
+
+  // Skip auto-sync if modals are open to avoid disrupting user interaction
+  const isExpenseModalActive = document.getElementById("expenseModal") && document.getElementById("expenseModal").classList.contains("active");
+  const isRouteModalActive = document.getElementById("routeModal") && document.getElementById("routeModal").classList.contains("active");
+  if (isExpenseModalActive || isRouteModalActive) {
+    return;
+  }
+
+  fetch('/api/plan')
+    .then(res => {
+      if (!res.ok) throw new Error("Server response error");
+      return res.json();
+    })
+    .then(serverData => {
+      if (serverData && typeof serverData === 'object') {
+        const serverStr = JSON.stringify(serverData);
+        const localStr = JSON.stringify(planData);
+        if (serverStr !== localStr) {
+          console.log("🔄 서버 데이터베이스와 로컬 캐시를 동기화합니다.");
+          planData = serverData;
+          runMigrations();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(planData));
+          renderAll();
+        }
+      }
+    })
+    .catch(err => {
+      console.error("☁️ 서버 데이터베이스 조회 실패 (오프라인 모드 작동 중):", err);
+    });
+}
+
+function renderAll() {
+  renderExpenses();
+  renderDayTabs();
+  renderTimeline();
+  if (typeof updateGoogleMapMarkers === 'function') {
+    updateGoogleMapMarkers();
   }
 }
 
@@ -733,28 +812,6 @@ function toggleMapSettings() {
   const content = document.getElementById("mapSettingsContent");
   if (content) {
     content.style.display = content.style.display === "none" ? "flex" : "none";
-  }
-}
-
-// ================================================================
-// ================================================================
-//  DEVICE SYNCHRONIZATION (Export to URL)
-// ================================================================
-function exportDataToUrl() {
-  try {
-    const jsonStr = JSON.stringify(planData);
-    const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
-    const shareUrl = `${window.location.origin}${window.location.pathname}#data=${base64}`;
-    
-    // Copy to clipboard
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      alert("📋 기기 간 동기화 링크가 클립보드에 복사되었습니다!\n\n이 링크를 카카오톡, 이메일 등으로 모바일에 전달한 뒤 모바일 브라우저에서 열면 현재 PC의 데이터가 모바일 기기에 그대로 동기화됩니다.");
-    }).catch(err => {
-      console.error("클립보드 복사 실패:", err);
-      prompt("동기화 링크가 자동 복사되지 않았습니다. 아래 링크를 전체 선택하여 복사 후 모바일에서 열어주세요:", shareUrl);
-    });
-  } catch (e) {
-    alert("동기화 링크 생성에 실패했습니다.");
   }
 }
 
