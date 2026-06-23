@@ -569,7 +569,9 @@ function initPlaceAutocomplete() {
       document.getElementById("routeLng").value = lng;
       
       if (place.name) {
-        input.value = place.name;
+        setTimeout(() => {
+          input.value = place.name;
+        }, 50);
       }
       
       if (statusEl) {
