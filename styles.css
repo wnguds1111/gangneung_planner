@@ -5,31 +5,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  /* ── Clay Brand Colors ── */
+  /* ── Ocean Blue Theme ── */
   --primary:           #0284c7;         /* Ocean Blue */
   --primary-active:    #0369a1;         /* Darker Blue */
   --primary-disabled:  #bae6fd;         /* Light Blue */
-  --ink:               #0a0a0a;
-  --body:              #3a3a3a;
-  --body-strong:       #1a1a1a;
-  --muted:             #6a6a6a;
-  --muted-soft:        #9a9a9a;
-  --hairline:          #e5e5e5;
-  --hairline-soft:     #f0f0f0;
+  --ink:               #0f172a;         /* Deep slate */
+  --body:              #334155;
+  --body-strong:       #1e293b;
+  --muted:             #64748b;
+  --muted-soft:        #94a3b8;
+  --hairline:          #cbd5e1;
+  --hairline-soft:     #f1f5f9;
 
   /* Surfaces */
-  --canvas:            #fffaf0;         /* Cream-tinted White Canvas */
-  --surface-soft:      #faf5e8;         /* Soft Cream for Footer/Headers */
+  --canvas:            #f0f9ff;         /* Ice Blue Canvas */
+  --surface-soft:      #e0f2fe;         /* Soft Blue */
   --surface-card:      #ffffff;         /* Pure White card base */
-  --surface-cream:     #f5f0e0;         /* Saturated Cream Card surface */
-  --surface-strong:    #ebe6d6;
+  --surface-cream:     #bae6fd;         /* Saturated ice card surface */
+  --surface-strong:    #7dd3fc;
   
-  /* Saturated Feature Card Accents */
-  --brand-pink:        #ff4d8b;
-  --brand-teal:        #1a3a3a;
-  --brand-lavender:    #b8a4ed;
-  --brand-peach:       #ffb084;
-  --brand-ochre:       #e8b94a;
+  /* Saturated Feature Card Accents (Blue ocean tones) */
+  --brand-pink:        #0ea5e9;         /* Sky Blue */
+  --brand-teal:        #1e3a8a;         /* Royal Navy */
+  --brand-lavender:    #e0f2fe;         /* Ice Blue */
+  --brand-peach:       #0f766e;         /* Deep Teal */
+  --brand-ochre:       #38bdf8;         /* Light Cyan */
+  --brand-cream:       #ffffff;         /* Slate/White */
   --brand-mint:        #a4d4c5;
   --brand-coral:       #ff6b5a;
 
@@ -49,7 +50,7 @@
   --radius-pill:       9999px;
 
   /* ── Shadows ── */
-  --shadow-subtle:     0 2px 12px rgba(10, 10, 10, 0.04);
+  --shadow-subtle:     0 2px 12px rgba(2, 132, 199, 0.05);
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -571,9 +572,9 @@ a { text-decoration: none; color: inherit; }
 .expense-card.card-pink { background: var(--brand-pink); color: var(--on-primary); }
 .expense-card.card-teal { background: var(--brand-teal); color: var(--on-dark); }
 .expense-card.card-lavender { background: var(--brand-lavender); color: var(--ink); }
-.expense-card.card-peach { background: var(--brand-peach); color: var(--ink); }
+.expense-card.card-peach { background: var(--brand-peach); color: #ffffff; }
 .expense-card.card-ochre { background: var(--brand-ochre); color: var(--ink); }
-.expense-card.card-cream { background: var(--brand-cream); color: var(--ink); border: 1px solid var(--surface-strong); }
+.expense-card.card-cream { background: var(--brand-cream); color: var(--ink); border: 1px solid var(--surface-cream); }
 
 .expense-emoji-circle {
   width: 48px;
@@ -588,11 +589,11 @@ a { text-decoration: none; color: inherit; }
 
 /* Dynamic emoji background adjustments */
 .card-pink .expense-emoji-circle, 
-.card-teal .expense-emoji-circle {
+.card-teal .expense-emoji-circle,
+.card-peach .expense-emoji-circle {
   background: rgba(255, 255, 255, 0.15);
 }
 .card-lavender .expense-emoji-circle, 
-.card-peach .expense-emoji-circle, 
 .card-ochre .expense-emoji-circle, 
 .card-cream .expense-emoji-circle {
   background: rgba(10, 10, 10, 0.05);
@@ -619,12 +620,12 @@ a { text-decoration: none; color: inherit; }
 }
 
 .card-pink .expense-payer-tag, 
-.card-teal .expense-payer-tag {
+.card-teal .expense-payer-tag,
+.card-peach .expense-payer-tag {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
 }
 .card-lavender .expense-payer-tag, 
-.card-peach .expense-payer-tag, 
 .card-ochre .expense-payer-tag, 
 .card-cream .expense-payer-tag {
   background: rgba(10, 10, 10, 0.08);
@@ -637,11 +638,11 @@ a { text-decoration: none; color: inherit; }
 }
 
 .card-pink .expense-memo-desc, 
-.card-teal .expense-memo-desc {
+.card-teal .expense-memo-desc,
+.card-peach .expense-memo-desc {
   color: rgba(255, 255, 255, 0.85);
 }
 .card-lavender .expense-memo-desc, 
-.card-peach .expense-memo-desc, 
 .card-ochre .expense-memo-desc, 
 .card-cream .expense-memo-desc {
   color: rgba(10, 10, 10, 0.55);
@@ -679,17 +680,18 @@ a { text-decoration: none; color: inherit; }
 
 /* Card buttons colors */
 .card-pink .btn-card-action, 
-.card-teal .btn-card-action {
+.card-teal .btn-card-action,
+.card-peach .btn-card-action {
   background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
 }
 .card-pink .btn-card-action:hover, 
-.card-teal .btn-card-action:hover {
+.card-teal .btn-card-action:hover,
+.card-peach .btn-card-action:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
 .card-lavender .btn-card-action, 
-.card-peach .btn-card-action, 
 .card-ochre .btn-card-action, 
 .card-cream .btn-card-action {
   background: rgba(10, 10, 10, 0.05);
@@ -697,7 +699,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--ink);
 }
 .card-lavender .btn-card-action:hover, 
-.card-peach .btn-card-action:hover, 
 .card-ochre .btn-card-action:hover, 
 .card-cream .btn-card-action:hover {
   background: rgba(10, 10, 10, 0.1);
