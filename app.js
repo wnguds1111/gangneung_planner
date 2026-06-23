@@ -47,9 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Auto-activate Map
   activateMap();
-  
-  // Initialize interactive features
-  initHeroCardTilt();
 });
 
 // ─── Local Storage: Load / Save ───
@@ -726,46 +723,5 @@ function formatDate(dateStr) {
   const day = d.getDate();
   const wk = ["일","월","화","수","목","금","토"][d.getDay()];
   return `${m}/${day} (${wk})`;
-}
-
-// ================================================================
-//  HERO CARD INTERACTIVE EFFECTS
-// ================================================================
-function initHeroCardTilt() {
-  const card = document.getElementById("heroCard");
-  if (!card) return;
-  
-  card.addEventListener("mousemove", (e) => {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((centerY - y) / centerY) * 15;
-    const rotateY = ((x - centerX) / centerX) * 15;
-    
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.04)`;
-    card.style.boxShadow = `0 20px 40px rgba(10, 10, 10, 0.15)`;
-  });
-  
-  card.style.transition = "transform 0.1s ease, box-shadow 0.2s ease";
-  
-  card.addEventListener("mouseleave", () => {
-    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
-    card.style.boxShadow = `var(--shadow-subtle)`;
-  });
-  
-  card.addEventListener("click", () => {
-    card.classList.add("card-clicked");
-    setTimeout(() => card.classList.remove("card-clicked"), 500);
-  });
-}
-
-function popDeco(el) {
-  el.classList.add("pop-anim");
-  setTimeout(() => {
-    el.classList.remove("pop-anim");
-  }, 600);
 }
 
