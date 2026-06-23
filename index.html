@@ -127,7 +127,6 @@
         <div class="section-title">동선 짜기</div>
         <div class="section-sub">날짜별 방문 장소와 이동 동선을 구글 지도에서 확인하세요 📍</div>
       </div>
-      <button class="btn-add-entry" onclick="openRouteModal()">+ 일정 추가</button>
     </div>
 
     <div class="route-layout">
@@ -157,12 +156,12 @@
             <div class="sidebar-title">📅 일정 목록</div>
             <div class="sidebar-actions">
               <button class="filter-chip" id="btnEditDays" onclick="toggleDayEditMode()">✏️ 편집</button>
-              <button class="filter-chip" onclick="addDay()">+ 날짜 추가</button>
+              <button class="filter-chip" id="btnAddDay" onclick="addDay()" style="display: none;">+ 날짜 추가</button>
+              <button class="filter-chip" id="btnAddPlace" onclick="openRouteModal()" style="display: none;">+ 일정 추가</button>
             </div>
           </div>
           <div class="day-tabs-mini" id="dayTabsMini"></div>
           <div class="timeline" id="timelineList"></div>
-          <button class="btn-add-place" onclick="openRouteModal()">+ 새로운 장소 추가하기</button>
         </div>
       </div>
     </div>

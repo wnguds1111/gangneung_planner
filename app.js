@@ -436,12 +436,18 @@ function toggleDayEditMode() {
   dayEditMode = !dayEditMode;
   const tabs = document.getElementById("dayTabsMini");
   const btn = document.getElementById("btnEditDays");
+  const addDayBtn = document.getElementById("btnAddDay");
+  const addPlaceBtn = document.getElementById("btnAddPlace");
   if (dayEditMode) {
     tabs.classList.add("edit-mode");
     btn.textContent = "✅ 완료";
+    if (addDayBtn) addDayBtn.style.display = "inline-block";
+    if (addPlaceBtn) addPlaceBtn.style.display = "inline-block";
   } else {
     tabs.classList.remove("edit-mode");
     btn.textContent = "✏️ 편집";
+    if (addDayBtn) addDayBtn.style.display = "none";
+    if (addPlaceBtn) addPlaceBtn.style.display = "none";
   }
 }
 
