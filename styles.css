@@ -672,11 +672,43 @@ a { text-decoration: none; color: inherit; }
   border-radius: var(--radius-lg);
 }
 
+.settlement-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.settlement-accordion-header:hover .section-title {
+  color: var(--primary);
+}
+.settlement-accordion-header:hover .accordion-arrow {
+  color: var(--primary);
+}
+
+.accordion-arrow {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+
 .settlement-grid {
-  display: grid;
+  display: none;
   grid-template-columns: 1fr;
   gap: 12px;
   margin-top: 16px;
+}
+
+.settlement-grid.active {
+  display: grid;
+  animation: slideDownAccordion 0.2s ease-out;
+}
+
+@keyframes slideDownAccordion {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .settle-card {

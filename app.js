@@ -14,7 +14,7 @@ let dayEditMode = false;
 const defaultData = {
   departDate: "2026-07-24T00:00:00+09:00",
   memberCount: 2,
-  members: ["나", "친구 1"],
+  members: ["주형", "기태"],
   expenses: [],
   memos: [],
   days: {
@@ -70,12 +70,40 @@ function loadData() {
       if (!planData.expenses) planData.expenses = [];
       if (!planData.memos) planData.memos = [];
       if (!planData.memberCount) planData.memberCount = planData.members ? planData.members.length : 2;
-      if (!planData.members) {
-        planData.members = ["나"];
-        for (let i = 1; i < planData.memberCount; i++) {
-          planData.members.push(`친구 ${i}`);
-        }
+      
+      // Migrate "나" -> "주형", "친구 1" -> "기태"
+      let migrated = false;
+      if (planData.members) {
+        const originalMembers = JSON.stringify(planData.members);
+        planData.members = planData.members.map(m => {
+          if (m === "나") return "주형";
+          if (m === "친구 1") return "기태";
+          return m;
+        });
+        if (originalMembers !== JSON.stringify(planData.members)) migrated = true;
       }
+      if (planData.expenses) {
+        planData.expenses.forEach(e => {
+          if (e.payer === "나") {
+            e.payer = "주형";
+            migrated = true;
+          } else if (e.payer === "친구 1") {
+            e.payer = "기태";
+            migrated = true;
+          }
+        });
+      }
+
+      if (!planData.members) {
+        planData.members = ["주형"];
+        for (let i = 1; i < planData.memberCount; i++) {
+          if (i === 1) planData.members.push("기태");
+          else planData.members.push(`친구 ${i}`);
+        }
+        migrated = true;
+      }
+      if (migrated) saveData();
+
       if (!planData.days) planData.days = JSON.parse(JSON.stringify(defaultData.days));
       console.log("✅ 강릉 플래너 로드 완료");
     } else {
@@ -115,9 +143,13 @@ function adjustPeople(delta) {
   planData.memberCount = newCount;
   
   // Re-generate members array
-  const newMembers = ["나"];
+  const newMembers = ["주형"];
   for (let i = 1; i < newCount; i++) {
-    newMembers.push(`친구 ${i}`);
+    if (i === 1) {
+      newMembers.push("기태");
+    } else {
+      newMembers.push(`친구 ${i}`);
+    }
   }
   planData.members = newMembers;
   
@@ -240,6 +272,20 @@ function renderExpenses() {
   renderSettlement();
 }
 
+let settlementExpanded = false;
+
+function toggleSettlementAccordion() {
+  settlementExpanded = !settlementExpanded;
+  const gridEl = document.getElementById("settlementResult");
+  const arrowEl = document.getElementById("settleAccordionArrow");
+  if (gridEl) {
+    gridEl.classList.toggle("active", settlementExpanded);
+  }
+  if (arrowEl) {
+    arrowEl.textContent = settlementExpanded ? "▲" : "▼";
+  }
+}
+
 function renderSettlement() {
   const settleEl = document.getElementById("settlementSection");
   const resultEl = document.getElementById("settlementResult");
@@ -309,6 +355,13 @@ function renderSettlement() {
       <span class="settle-amount-display">₩${fmtPrice(t.amount)}</span>
     </div>
   `).join("");
+
+  // Sync accordion expansion state
+  resultEl.classList.toggle("active", settlementExpanded);
+  const arrowEl = document.getElementById("settleAccordionArrow");
+  if (arrowEl) {
+    arrowEl.textContent = settlementExpanded ? "▲" : "▼";
+  }
 }
 
 // ================================================================

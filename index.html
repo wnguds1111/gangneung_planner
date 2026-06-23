@@ -114,7 +114,10 @@
 
     <!-- 정산 결과 -->
     <div id="settlementSection" class="settlement-section" style="display:none;">
-      <div class="section-title" style="font-size:20px; margin-bottom:16px;">정산 결과</div>
+      <div class="settlement-accordion-header" onclick="toggleSettlementAccordion()">
+        <div class="section-title" style="font-size:20px;">정산 결과</div>
+        <span class="accordion-arrow" id="settleAccordionArrow">▼</span>
+      </div>
       <div id="settlementResult" class="settlement-grid"></div>
     </div>
   </div>
