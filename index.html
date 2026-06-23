@@ -64,6 +64,7 @@
 <div class="tabs-bar">
   <button class="tab-btn active" id="tabExpense" onclick="switchTab('expense', this)"><span class="tab-icon">💸</span> 지출</button>
   <button class="tab-btn" id="tabRoute" onclick="switchTab('route', this)"><span class="tab-icon">🗺️</span> 동선</button>
+  <button class="tab-btn-sync" onclick="exportDataToUrl()" title="현재 기기의 데이터를 다른 기기로 동기화하는 링크 복사"><span class="tab-icon">🔗</span> 기기 동기화</button>
 </div>
 
 <!-- ================================================================ MAIN ================================================================ -->
@@ -245,25 +246,7 @@
   </div>
 </div>
 
-<!-- ═══ FLOATING MEMO WIDGET ═══ -->
-<div class="floating-memo-widget" id="floatingMemoWidget">
-  <button class="memo-trigger-btn" id="memoTriggerBtn" onclick="toggleMemoWidget()" title="메모 열기">
-    <span class="memo-icon">💬</span>
-  </button>
-  <div class="glass-card memo-card-popup" id="memoCardPopup">
-    <div class="memo-popup-header">
-      <div style="font-weight: 600; font-size: 17px; color: var(--ink); display: flex; align-items: center; gap: 8px;">
-        <span>📝</span> 우리의 메모장
-      </div>
-      <button class="btn-close-memo" onclick="toggleMemoWidget()">✕</button>
-    </div>
-    <div class="memo-popup-body" id="memoBoard"></div>
-    <div class="memo-popup-footer">
-      <input class="form-input memo-input-field" id="memoInput" placeholder="메모를 남겨보세요..." onkeypress="if(event.key==='Enter') postMemo()">
-      <button class="btn-send-memo" onclick="postMemo()">남기기</button>
-    </div>
-  </div>
-</div>
+
 
 <footer>
   <div class="footer-title">🌊 Gangneung Travel Planner</div>

@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderExpenses();
   renderDayTabs();
   renderTimeline();
-  renderMemos();
   
   // Auto-activate Map
   activateMap();
@@ -64,6 +63,26 @@ function saveData() {
 
 function loadData() {
   try {
+    // 🔗 URL 동기화 해시 체크 및 가져오기
+    const hash = window.location.hash;
+    if (hash && hash.startsWith("#data=")) {
+      try {
+        const base64 = hash.substring(6);
+        const jsonStr = decodeURIComponent(escape(atob(base64)));
+        const parsed = JSON.parse(jsonStr);
+        if (parsed && typeof parsed === 'object') {
+          planData = parsed;
+          saveData();
+          // URL의 해시를 제거하여 주소창을 깔끔하게 유지
+          window.history.replaceState(null, null, window.location.origin + window.location.pathname);
+          alert("📥 기기 동기화 완료! 현재 데이터를 성공적으로 가져왔습니다.");
+          return;
+        }
+      } catch (e) {
+        console.error("URL 데이터 파싱 실패:", e);
+      }
+    }
+
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       planData = JSON.parse(saved);
@@ -718,61 +737,25 @@ function toggleMapSettings() {
 }
 
 // ================================================================
-//  MEMO WIDGET
 // ================================================================
-function toggleMemoWidget() {
-  const popup = document.getElementById("memoCardPopup");
-  if (popup) {
-    popup.classList.toggle("active");
-    if (popup.classList.contains("active")) {
-      renderMemos();
-      const input = document.getElementById("memoInput");
-      if (input) input.focus();
-    }
+//  DEVICE SYNCHRONIZATION (Export to URL)
+// ================================================================
+function exportDataToUrl() {
+  try {
+    const jsonStr = JSON.stringify(planData);
+    const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+    const shareUrl = `${window.location.origin}${window.location.pathname}#data=${base64}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert("📋 기기 간 동기화 링크가 클립보드에 복사되었습니다!\n\n이 링크를 카카오톡, 이메일 등으로 모바일에 전달한 뒤 모바일 브라우저에서 열면 현재 PC의 데이터가 모바일 기기에 그대로 동기화됩니다.");
+    }).catch(err => {
+      console.error("클립보드 복사 실패:", err);
+      prompt("동기화 링크가 자동 복사되지 않았습니다. 아래 링크를 전체 선택하여 복사 후 모바일에서 열어주세요:", shareUrl);
+    });
+  } catch (e) {
+    alert("동기화 링크 생성에 실패했습니다.");
   }
-}
-
-function postMemo() {
-  const input = document.getElementById("memoInput");
-  if (!input) return;
-  const text = input.value.trim();
-  if (!text) return;
-
-  planData.memos.push({
-    id: String(Date.now()),
-    text,
-    time: new Date().toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
-  });
-
-  input.value = "";
-  renderMemos();
-  saveData();
-}
-
-function deleteMemo(id) {
-  planData.memos = planData.memos.filter(m => m.id !== id);
-  renderMemos();
-  saveData();
-}
-
-function renderMemos() {
-  const el = document.getElementById("memoBoard");
-  if (!el) return;
-
-  if (planData.memos.length === 0) {
-    el.innerHTML = `<div style="padding:24px; text-align:center; color:var(--muted); font-size:13px;">메모가 없어요. 여행 아이디어를 남겨보세요! 💡</div>`;
-    return;
-  }
-
-  el.innerHTML = [...planData.memos].reverse().map(m => `
-    <div class="memo-item">
-      ${escHtml(m.text)}
-      <div class="memo-time">${m.time || ""}</div>
-      <button class="memo-del" onclick="deleteMemo('${m.id}')">✕</button>
-    </div>
-  `).join("");
-
-  el.scrollTop = 0;
 }
 
 // ================================================================
