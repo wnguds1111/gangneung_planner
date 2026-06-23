@@ -552,29 +552,24 @@ a { text-decoration: none; color: inherit; }
 }
 
 .expense-card {
+  background: var(--surface-card);
   border-radius: var(--radius-xl);
   padding: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  border: 1px solid var(--hairline-soft);
   box-shadow: var(--shadow-subtle);
+  color: var(--ink);
 }
 
 .expense-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.08);
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.08);
+  border-color: var(--primary-disabled);
 }
-
-/* Saturated Palette Options */
-.expense-card.card-pink { background: var(--brand-pink); color: var(--on-primary); }
-.expense-card.card-teal { background: var(--brand-teal); color: var(--on-dark); }
-.expense-card.card-lavender { background: var(--brand-lavender); color: var(--ink); }
-.expense-card.card-peach { background: var(--brand-peach); color: #ffffff; }
-.expense-card.card-ochre { background: var(--brand-ochre); color: var(--ink); }
-.expense-card.card-cream { background: var(--brand-cream); color: var(--ink); border: 1px solid var(--surface-cream); }
 
 .expense-emoji-circle {
   width: 48px;
@@ -587,17 +582,13 @@ a { text-decoration: none; color: inherit; }
   flex-shrink: 0;
 }
 
-/* Dynamic emoji background adjustments */
-.card-pink .expense-emoji-circle, 
-.card-teal .expense-emoji-circle,
-.card-peach .expense-emoji-circle {
-  background: rgba(255, 255, 255, 0.15);
-}
-.card-lavender .expense-emoji-circle, 
-.card-ochre .expense-emoji-circle, 
-.card-cream .expense-emoji-circle {
-  background: rgba(10, 10, 10, 0.05);
-}
+/* Accent pastel background colors for emoji badges */
+.expense-card.card-pink .expense-emoji-circle { background: #e0f2fe; color: #0284c7; }
+.expense-card.card-teal .expense-emoji-circle { background: #dbeafe; color: #1e40af; }
+.expense-card.card-lavender .expense-emoji-circle { background: #e0e7ff; color: #4f46e5; }
+.expense-card.card-peach .expense-emoji-circle { background: #ccfbf1; color: #0f766e; }
+.expense-card.card-ochre .expense-emoji-circle { background: #e0f7fa; color: #00838f; }
+.expense-card.card-cream .expense-emoji-circle { background: #f1f5f9; color: #475569; }
 
 .expense-info { flex: 1; min-width: 0; }
 .expense-title-row {
@@ -617,35 +608,14 @@ a { text-decoration: none; color: inherit; }
   font-weight: 600;
   padding: 3px 10px;
   border-radius: var(--radius-pill);
-}
-
-.card-pink .expense-payer-tag, 
-.card-teal .expense-payer-tag,
-.card-peach .expense-payer-tag {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-}
-.card-lavender .expense-payer-tag, 
-.card-ochre .expense-payer-tag, 
-.card-cream .expense-payer-tag {
-  background: rgba(10, 10, 10, 0.08);
-  color: var(--ink);
+  background: var(--surface-soft);
+  color: var(--primary);
 }
 
 .expense-memo-desc {
   font-size: 13px;
   margin-top: 4px;
-}
-
-.card-pink .expense-memo-desc, 
-.card-teal .expense-memo-desc,
-.card-peach .expense-memo-desc {
-  color: rgba(255, 255, 255, 0.85);
-}
-.card-lavender .expense-memo-desc, 
-.card-ochre .expense-memo-desc, 
-.card-cream .expense-memo-desc {
-  color: rgba(10, 10, 10, 0.55);
+  color: var(--muted);
 }
 
 .expense-right-side {
@@ -669,8 +639,9 @@ a { text-decoration: none; color: inherit; }
   width: 32px;
   height: 32px;
   border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  font-size: 12px;
+  border: 1px solid var(--hairline-soft);
+  background: var(--canvas);
+  color: var(--muted);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -678,30 +649,16 @@ a { text-decoration: none; color: inherit; }
   transition: all 0.2s;
 }
 
-/* Card buttons colors */
-.card-pink .btn-card-action, 
-.card-teal .btn-card-action,
-.card-peach .btn-card-action {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-}
-.card-pink .btn-card-action:hover, 
-.card-teal .btn-card-action:hover,
-.card-peach .btn-card-action:hover {
-  background: rgba(255, 255, 255, 0.3);
+.btn-card-action:hover {
+  background: var(--surface-soft);
+  color: var(--primary);
+  border-color: var(--primary-disabled);
 }
 
-.card-lavender .btn-card-action, 
-.card-ochre .btn-card-action, 
-.card-cream .btn-card-action {
-  background: rgba(10, 10, 10, 0.05);
-  border-color: rgba(10, 10, 10, 0.08);
-  color: var(--ink);
-}
-.card-lavender .btn-card-action:hover, 
-.card-ochre .btn-card-action:hover, 
-.card-cream .btn-card-action:hover {
-  background: rgba(10, 10, 10, 0.1);
+.btn-card-action.del:hover {
+  background: #fee2e2;
+  color: var(--error);
+  border-color: #fca5a5;
 }
 
 /* ================================================================
