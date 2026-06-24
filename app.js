@@ -471,6 +471,7 @@ function openRouteModal(id) {
   document.getElementById("routeModalTitle").textContent = id ? "📍 장소 수정" : "📍 새 장소 추가";
   document.getElementById("routeTime").value = existingItem?.time || "";
   document.getElementById("routeName").value = existingItem?.name || "";
+  document.getElementById("routeLink").value = existingItem?.link || "";
   document.getElementById("routeMemo").value = existingItem?.memo || "";
   document.getElementById("routeLat").value = existingItem?.lat || "";
   document.getElementById("routeLng").value = existingItem?.lng || "";
@@ -525,6 +526,7 @@ function saveRoute() {
     id: existingId ? Number(existingId) : Date.now(),
     time: document.getElementById("routeTime").value,
     name,
+    link: document.getElementById("routeLink").value.trim(),
     lat: latVal ? parseFloat(latVal) : null,
     lng: lngVal ? parseFloat(lngVal) : null,
     memo: document.getElementById("routeMemo").value.trim()
@@ -641,6 +643,7 @@ function renderTimeline() {
         <div class="timeline-time-text">${it.time || "시간 미정"}</div>
         <div class="timeline-place-name">📍 ${escHtml(it.name)}</div>
         ${it.memo ? `<div class="timeline-memo-text">${escHtml(it.memo)}</div>` : ""}
+        ${it.link ? `<div class="timeline-link-text"><a href="${escHtml(it.link)}" target="_blank" onclick="event.stopPropagation()">🔗 링크 열기</a></div>` : ""}
       </div>
       <div class="timeline-action-container" onclick="event.stopPropagation()">
         <button class="btn-card-action" onclick="openRouteModal(${it.id})" title="수정"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4z"></path></svg></button>

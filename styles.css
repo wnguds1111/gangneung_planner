@@ -1003,6 +1003,31 @@ a { text-decoration: none; color: inherit; }
   line-height: 1.5;
 }
 
+.timeline-link-text {
+  margin-top: 8px;
+}
+
+.timeline-link-text a {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface-cream);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+  border: 1px solid var(--primary-disabled);
+}
+
+.timeline-link-text a:hover {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
 .timeline-action-container {
   display: flex;
   gap: 6px;
