@@ -677,10 +677,31 @@ a { text-decoration: none; color: inherit; }
   border-color: var(--primary-disabled);
 }
 
+.btn-card-action.link {
+  color: var(--primary);
+  border-color: var(--primary-disabled);
+}
+.btn-card-action.link:hover {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
 .btn-card-action.del:hover {
   background: #fee2e2;
   color: var(--error);
   border-color: #fca5a5;
+}
+
+/* Timeline Edit Mode Toggling */
+#timelineList .btn-card-action.edit-btn,
+#timelineList .btn-card-action.del-btn {
+  display: none;
+}
+
+#timelineList.edit-mode .btn-card-action.edit-btn,
+#timelineList.edit-mode .btn-card-action.del-btn {
+  display: inline-flex;
 }
 
 /* ================================================================
@@ -1001,31 +1022,6 @@ a { text-decoration: none; color: inherit; }
   color: var(--muted);
   margin-top: 4px;
   line-height: 1.5;
-}
-
-.timeline-link-text {
-  margin-top: 8px;
-}
-
-.timeline-link-text a {
-  display: inline-flex;
-  align-items: center;
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--surface-cream);
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  transition: all 0.2s ease;
-  border: 1px solid var(--primary-disabled);
-}
-
-.timeline-link-text a:hover {
-  background: var(--primary);
-  color: var(--on-primary);
-  border-color: var(--primary);
-  transform: translateY(-1px);
 }
 
 .timeline-action-container {
