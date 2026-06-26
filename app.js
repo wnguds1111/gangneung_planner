@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ─── Local Storage: Load / Save ───
 function saveData() {
   try {
+    planData.lastModified = Date.now();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(planData));
     
     // Save to backend server database (PC-Mobile Auto Sync)
@@ -120,6 +121,11 @@ function runMigrations() {
 
   if (!planData.days) {
     planData.days = JSON.parse(JSON.stringify(defaultData.days));
+    migrated = true;
+  }
+
+  if (!planData.lastModified) {
+    planData.lastModified = 0;
     migrated = true;
   }
   
@@ -193,11 +199,25 @@ function fetchPlanFromServer() {
         const serverStr = JSON.stringify(serverData);
         const localStr = JSON.stringify(planData);
         if (serverStr !== localStr) {
-          console.log("🔄 서버 데이터베이스와 로컬 캐시를 동기화합니다.");
-          planData = serverData;
-          runMigrations();
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(planData));
-          renderAll();
+          const serverTime = serverData.lastModified || 0;
+          const localTime = planData.lastModified || 0;
+
+          if (serverTime > localTime) {
+            console.log("🔄 서버 데이터베이스와 로컬 캐시를 동기화합니다 (서버가 더 최신).");
+            planData = serverData;
+            runMigrations();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(planData));
+            renderAll();
+          } else if (localTime > serverTime) {
+            console.log("⬆️ 로컬 데이터가 더 최신입니다. 서버에 업데이트를 요청합니다.");
+            saveData();
+          } else {
+            console.log("🔄 데이터가 다르지만 타임스탬프가 같아 서버 데이터로 강제 동기화합니다.");
+            planData = serverData;
+            runMigrations();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(planData));
+            renderAll();
+          }
         }
       }
     })
